@@ -1,0 +1,10 @@
+[Desktop Entry]
+Type=Application
+X-Nemo-Application-Type=silica-qt5
+Icon=harbour-meijumao
+Exec=harbour-meijumao
+Name=BlogofWy
+# translation example:
+# your app name in German locale (de)
+Name[cn]=王垠博客
+
