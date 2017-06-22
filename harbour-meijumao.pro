@@ -27,9 +27,8 @@ OTHER_FILES += qml/harbour-meijumao.qml \
     harbour-meijumao.desktop \
     qml/pages/BlogDetail.qml \
     qml/pages/Progress.qml \
-    qml/py/ \
-    qml/pages/About.qml \
-    qml/cover/icon.png \
+    qml/py/*.py \
+    qml/pages/About.qml
 # to disable building translations every time, comment out the
 # following CONFIG line
 

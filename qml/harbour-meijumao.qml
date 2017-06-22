@@ -36,34 +36,23 @@ import org.nemomobile.notifications 1.0
 ApplicationWindow
 {
 
+    property string appname: "美剧猫"
     id:appwindow
     allowedOrientations: Orientation.Landscape | Orientation.Portrait | Orientation.LandscapeInverted
 
 
     Notification{
         id:notification
-        appName: "CnBeta"
+        appName: appname
     }
 
-    function formathtml(html){
-       html=html.replace(/<a href=/g,"<a style='color:"+Theme.highlightColor+"' target='_blank' href=");
-       html=html.replace(/<a class=/g,"<a style='color:"+Theme.highlightColor+"' target='_blank' class=");
-       html=html.replace(/<p>/g,"<p style='text-indent:24px'>");
-       html=html.replace(/<p style='text-indent:24px'><img/g,"<p><img");
-       html=html.replace(/<p style='text-indent:24px'><a [^<>]*href=\"([^<>"]*)\".*?><img/g,"<p><a href='$1'><img");
-       html=html.replace(/<img src=\"([^<>"]*)\".*?>/g,"<a href='$1.showimg'><img src=\"$1\" width="+(Screen.width-Theme.paddingMedium*2)+"/></a>");//$&</a>");
-       html=html.replace(/<img src/g,"<img src='default.jpg' x-src");
-//        html=html.replace(/<p><img /g,"<p style='text-indent:-10px'><img width="+Screen.width+" ");
-//        html=html.replace(/<img /g,"<img style='max-width:"+Screen.width+";margin-left:-10px;' ");
 
-        return html;
-    }
     initialPage: Component {
         FirstPage { }
     }
 
     function showMsg(message) {
-        notification.previewBody = "Cnbeta";
+        notification.previewBody = appname;
         notification.previewSummary = message;
         notification.close();
         notification.publish();
@@ -71,8 +60,8 @@ ApplicationWindow
 
     cover: CoverBackground {
         CoverPlaceholder{
-            icon.source: "cover/icon.png"
-            text:"Cnbeta"
+            icon.source: "image://theme/harbour-meijumao"
+            text:appname
         }
     }
 

@@ -38,45 +38,58 @@ Page{
     property int page:1
     allowedOrientations: Orientation.Landscape | Orientation.Portrait | Orientation.LandscapeInverted
 
-    Progress{
-        id:progress
-        parent:showBlogs
-        anchors.centerIn: parent
+    ListModel{
+        id:indexModel
+
     }
 
     ListModel {
-        id:bloglistModel
+        id:meijulistModel
     }
  
 
 
     function appModel(result){
-        console.log(result);
         for ( var i in result){
-            bloglistModel.append({
+            meijulistModel.append({
                                     "href":result[i].href,
                                     "article":result[i].article,
                                 });
 
                        }
-      view.model  = bloglistModel;
+      view.model  = meijulistModel;
     }
     
+    /*
+
+    ("/search", u"搜索"),
+    ("/categories", u"分类"),
+    ("/maogetvs", u"猫哥推荐"),
+    ("/alltvs", u"所有美剧"),
+    ("/populartvs", u"热门美剧"),
+    ("/sitemaptvs",u"美剧索引")
+    */
 
     Python{
         id:py
         Component.onCompleted: {
             addImportPath(Qt.resolvedUrl('../py'));
             py.importModule('main', function () {
-                py.loadBlogs();
+                py.loadIndex();
              });
 
         }
-        function loadBlogs(){
-            progress.running = true;
+
+
+        function loadCategories(){
             py.call('main.bloglist',[],function(result){
                 appModel(result);
-                progress.running = false;
+            });
+        }
+
+        function loadMaogetvs(){
+            py.call('main.list_sections',["maogetvs"],function(result){
+                appModel(result);
             });
         }
 
@@ -93,27 +106,34 @@ Page{
         id:view
         header: PageHeader {
             id:header
-            title: qsTr("Cnbeta")
+            title: qsTr("美剧猫")
         }
         anchors.fill: parent
         PullDownMenu{
+            id:pullDownMenu
 
+            MenuItem{
+                text:"搜索"
+            }
+            MenuItem{
+                text:"分类"
+            }
+            MenuItem{
+                text:"猫哥推荐"
+            }
+
+            MenuItem{
+                text:"热门美剧"
+            }
             MenuItem{
                 text:"关于"
                 onClicked:pageStack.push(Qt.resolvedUrl("About.qml"));
             }
 
+
         
         }
-        PushUpMenu{
-            id:pushUp
 
-            MenuItem{
-                text:"返回顶部"
-                onClicked: view.scrollToTop()
-            }
-
-        }
 
         clip: true
         //spacing:Theme.paddingMedium
