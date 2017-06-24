@@ -32,3 +32,7 @@ OTHER_FILES += qml/harbour-meijumao.qml \
 # to disable building translations every time, comment out the
 # following CONFIG line
 
+DISTFILES += \
+    qml/pages/Signalcenter.qml \
+    qml/pages/CacheImage.qml
+

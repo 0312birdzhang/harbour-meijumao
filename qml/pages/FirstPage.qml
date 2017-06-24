@@ -32,15 +32,25 @@ import Sailfish.Silica 1.0
 import io.thp.pyotherside 1.3
 
 Page{
-    id:showBlogs
+    id:firstPage
 
     property int operationType: PageStackAction.Animated
     property int page:1
+    property string headtitle: "推荐"
+    property string current_section: "/maogetvs"
+    property bool nextpage:false
+    property bool prevpage:false
+    property string next_section
+    property string pre_section
     allowedOrientations: Orientation.Landscape | Orientation.Portrait | Orientation.LandscapeInverted
 
-    ListModel{
-        id:indexModel
 
+    onStatusChanged: {
+        if (status == PageStatus.Active) {
+            if (pageStack._currentContainer.attachedContainer == null) {
+                pageStack.pushAttached(categoriesPage)
+            }
+        }
     }
 
     ListModel {
@@ -50,16 +60,27 @@ Page{
 
 
     function appModel(result){
-        for ( var i in result){
+        meijulistModel.clear();
+        if(!result){
+            return;
+        }
+        for ( var i = 0 ; i< result.datas.length ; i++){
             meijulistModel.append({
-                                    "href":result[i].href,
-                                    "article":result[i].article,
-                                });
+                                      "series":result.datas[i].href,
+                                      "article":result.datas[i].label,
+                                      "thumbnail":result.datas[i].thumbnail
+                                  });
 
-                       }
-      view.model  = meijulistModel;
+        }
+        nextpage = result.next_page
+        prevpage = result.pre_page
+        if(nextpage)next_section = result.next_section
+        if(prevpage)pre_section = result.pre_section
+        view.model  = meijulistModel;
     }
     
+
+
     /*
 
     ("/search", u"搜索"),
@@ -75,55 +96,59 @@ Page{
         Component.onCompleted: {
             addImportPath(Qt.resolvedUrl('../py'));
             py.importModule('main', function () {
-                py.loadIndex();
+                py.loadSections(current_section);
+//                py.loadCategories(current_section);
              });
 
         }
 
 
-        function loadCategories(){
-            py.call('main.bloglist',[],function(result){
-                appModel(result);
+
+
+        //推荐、热门、所有等等
+        function loadSections(section){
+            current_section = section;
+            py.call('main.list_sections',[section],function(result){
+                console.log(result)
+                appModel(eval('(' + result + ')'));
             });
         }
 
-        function loadMaogetvs(){
-            py.call('main.list_sections',["maogetvs"],function(result){
-                appModel(result);
-            });
-        }
-
-
-        onError: {
-            //showMsg("加载失败，请刷新重试！")
-            progress.visible=false;
-        }
 
     }
 
 
-    SilicaListView {
+    SilicaGridView {
         id:view
         header: PageHeader {
             id:header
-            title: qsTr("美剧猫")
+            title: headtitle
         }
         anchors.fill: parent
         PullDownMenu{
             id:pullDownMenu
-
             MenuItem{
-                text:"搜索"
-            }
-            MenuItem{
-                text:"分类"
-            }
-            MenuItem{
-                text:"猫哥推荐"
+                text:"所有"
+                onClicked: {
+                    headtitle = text
+                    py.loadSections("/alltvs");
+                }
             }
 
             MenuItem{
-                text:"热门美剧"
+                text:"推荐"
+                onClicked: {
+                    headtitle = text
+                    py.loadSections("/maogetvs");
+                }
+            }
+
+            MenuItem{
+                text:"热门"
+                onClicked: {
+                    headtitle = text
+                    py.loadSections("/populartvs");
+                }
             }
             MenuItem{
                 text:"关于"
@@ -134,56 +159,48 @@ Page{
         
         }
 
-
+//        model : meijulistModel
         clip: true
-        //spacing:Theme.paddingMedium
+        width: childrenRect.width
+        currentIndex: -1
+        cellWidth: view.width / 3
+        cellHeight: Screen.height / 2.5
+        cacheBuffer: 2000;
         delegate:
             BackgroundItem{
             id:showlist
-            height:titleid.height+timeid.height+summaryid.height+Theme.paddingMedium*4
-            width: parent.width
+            width: (parent.width - Theme.paddingMedium ) / 3
+            height: titleid.height + thumb.height + Theme.paddingSmall * 2
+
             Label{
                 id:titleid
                 text:article
-                font.pixelSize: Theme.fontSizeSmall
-                truncationMode: TruncationMode.Fade
+                truncationMode: TruncationMode.Elide
+                maximumLineCount: 3
+                width: parent.width
+                height: Theme.itemSizeSmall
                 wrapMode: Text.WordWrap
                 color: Theme.highlightColor
-                font.bold:true;
-                anchors {
-                    top:parent.top;
-                    left: parent.left
-                    right: parent.right
-                    topMargin: Theme.paddingMedium
-                    leftMargin: Theme.paddingMedium
-                    rightMargin: Theme.paddingMedium
-                }
+                font {
+                   pixelSize: Theme.fontSizeMedium
+                   family: Theme.fontFamilyHeading
+                   bold:true;
+               }
             }
 
-            Label{
-                id:summaryid
-                text:intro.replace(/(<[\/]?strong>)|(<[\/]?p>)/g,"")
-                textFormat: Text.StyledText
-                font.pixelSize: Theme.fontSizeExtraSmall
-                wrapMode: Text.WordWrap
-                linkColor:Theme.primaryColor
-                maximumLineCount: 6
+            CacheImage{
+                id:thumb
+                cacheurl :thumbnail
+                fillMode: Image.PreserveAspectFit;
                 anchors {
                     top: titleid.bottom
                     left: parent.left
                     right: parent.right
-                    topMargin: Theme.paddingMedium
-                    leftMargin: Theme.paddingMedium
-                    rightMargin: Theme.paddingMedium
+                    margins: Theme.paddingSmall
                 }
             }
             
-            Separator {
-                visible:(index > 0?true:false)
-                width:parent.width;
-                //alignment:Qt.AlignHCenter
-                color: Theme.highlightColor
-            }
+
             onClicked: {
                 pageStack.push(Qt.resolvedUrl("NewsDetail.qml"),{
                                    "article":article,
@@ -193,20 +210,131 @@ Page{
         }
 
         
+        footer: Component{
+
+            Item {
+                id: loadMoreID
+                visible: !appwindow.loading
+                anchors {
+                    left: parent.left;
+                    right: parent.right;
+                }
+                height: Theme.itemSizeMedium
+                Row {
+                    id:footItem
+                    spacing: Theme.paddingLarge
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    Button {
+                        text: "上一页"
+                        visible: prevpage
+                        onClicked: {
+                            view.scrollToTop()
+                            py.loadSections(pre_section);
+                        }
+                    }
+                    Button{
+                        text:"下一页"
+                        visible: nextpage
+                        onClicked: {
+                           view.scrollToTop()
+                           py.loadSections(next_section);
+                        }
+                    }
+                }
+            }
+
+        }
 
         VerticalScrollDecorator {flickable: view}
 
         ViewPlaceholder {
-            enabled: view.count == 0 && !PageStatus.Active
+            enabled: view.count == 0 && !appwindow.loading && !PageStatus.Active
             text: "无结果，点击重试"
             MouseArea{
                 anchors.fill: parent
                 onClicked: {
-                    py.loadNews(page)
+                     py.loadSections(current_section);
                 }
             }
         }
 
+    }
+
+
+    Component {
+        id: categoriesPage
+        Page {
+            ListModel{
+                id:categoriesModel
+            }
+            function loadCategories(article){
+                py.call('main.list_categories',[article],function(result){
+//                    console.log(result)
+                    fillCategory(result);
+                });
+            }
+            function fillCategory(result){
+                categoriesModel.clear();
+                if(result.length == 0)return;
+                for(var i=0;i<result.length;i++){
+//                    console.log(result[i].label)
+                    categoriesModel.append({
+                                               "section":result[i].section,
+                                               "label":result[i].label
+                                           })
+                }
+                cateView.model = categoriesModel
+            }
+
+            Component.onCompleted: {
+                loadCategories("/alltvs")
+            }
+
+            SilicaListView {
+                id:cateView
+                header: PageHeader {
+                    id:header
+                    title: "分类"
+                }
+                anchors.fill: parent
+                clip: true
+                delegate:BackgroundItem{
+                    width: parent.width
+                    height: catelabelid.height + Theme.paddingMedium * 2
+                    Label{
+                        id:catelabelid
+                        text:label
+                        font.pixelSize: Theme.fontSizeSmall
+                        truncationMode: TruncationMode.Fade
+                        wrapMode: Text.WordWrap
+                        color: Theme.highlightColor
+                        font.bold:true;
+                        anchors {
+                            top:parent.top;
+                            left: parent.left
+                            right: parent.right
+                            margins: Theme.paddingMedium
+                        }
+                    }
+                    Image {
+                        id: iconLeftImg
+
+                        anchors {
+                            right: parent.right
+                            rightMargin: Theme.paddingSmall
+                            verticalCenter: parent.verticalCenter
+                        }
+                        source: "image://theme/icon-m-right"
+                    }
+                    onClicked: {
+                        headtitle = "分类-"+label
+                        py.loadSections(section);
+                        view.scrollToTop()
+                        pageStack.popAttached(undefined);
+                    }
+                }
+            }
+        }
     }
 
 }

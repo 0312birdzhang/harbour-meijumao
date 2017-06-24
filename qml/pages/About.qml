@@ -95,20 +95,6 @@ Page {
                 anchors.horizontalCenter: parent.horizontalCenter
                 font.pixelSize: Theme.fontSizeSmall
             }
-            SectionHeader {
-                //: headline for application licensing information
-                text: "设置"
-            }
-            Item{
-                width: parent.width
-                height:imgswitch.height
-                TextSwitch {
-                    id: imgswitch
-                    checked: openimg == 1
-                    onClicked: updateSetting()
-                    description:"Wifi下默认显示图片"
-                    text: "显示图片"
-                }
 
             }
 

@@ -36,8 +36,10 @@ import org.nemomobile.notifications 1.0
 ApplicationWindow
 {
 
-    property string appname: "美剧猫"
     id:appwindow
+    property string appname: "美剧猫"
+    property bool loading: false
+
     allowedOrientations: Orientation.Landscape | Orientation.Portrait | Orientation.LandscapeInverted
 
 
@@ -51,6 +53,46 @@ ApplicationWindow
         FirstPage { }
     }
 
+    BusyIndicator {
+        id: busyIndicator
+        anchors.centerIn: parent
+        running: loading
+        size: BusyIndicatorSize.Large
+    }
+
+    RemorsePopup {
+        id: remorse
+    }
+
+    Timer{
+        id:processingtimer;
+        interval: 60000;
+        onTriggered: signalCenter.loadFailed(qsTr("Timeout"));
+    }
+
+
+
+    Connections{
+        target: signalCenter;
+        onLoadStarted:{
+            appwindow.loading=true;
+            processingtimer.restart();
+        }
+        onLoadFinished:{
+            appwindow.loading=false;
+            processingtimer.stop();
+        }
+        onLoadFailed:{
+            appwindow.loading=false;
+            processingtimer.stop();
+            signalCenter.showMessage(errorstring);
+        }
+    }
+
+    Signalcenter{
+        id: signalCenter;
+    }
+
     function showMsg(message) {
         notification.previewBody = appname;
         notification.previewSummary = message;
@@ -60,6 +102,8 @@ ApplicationWindow
 
     cover: CoverBackground {
         CoverPlaceholder{
+            icon.width: Theme.coverSizeSmall.width
+            icon.height: icon.width
             icon.source: "image://theme/harbour-meijumao"
             text:appname
         }

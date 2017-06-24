@@ -10,12 +10,20 @@ import urllib.request
 import urllib.parse
 import json
 import re
+import pyotherside
+from basedir import *
 from bs4 import BeautifulSoup
 import logging
 
-__AUTHOR__ = "BirdZhang"
+import hashlib
+import os,sys
 
+__AUTHOR__ = "BirdZhang"
 _meijumao = "http://www.meijumao.net"
+__appname__ = "harbour-meijumao"
+cachePath=os.path.join(XDG_CACHE_HOME, __appname__, __appname__,"img","")
+
+logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.DEBUG)
 __index__ = [
     ("/search", u"搜索"),
     ("/categories", u"分类"),
@@ -26,21 +34,26 @@ __index__ = [
 ]
 
 
+if not os.path.exists(cachePath):
+    os.makedirs(cachePath)
 
 def get(url):
     headers = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36 Edge/15.15063',
         'Host': 'www.meijumao.net'
         }
+    pyotherside.send('loadStarted')
     req = urllib.request.Request(url,headers=headers)
     try:
         response = urllib.request.urlopen(req,timeout=30)
         allhtml = response.read()
+        pyotherside.send('loadFinished')
+        #logging.debug(allhtml)
         return allhtml
     except Exception as e:
-        print(str(e))
-        #logging.debug(traceback.format_exc())
-        return ''
+        logging.debug(str(e))
+        pyotherside.send('loadFailed',str(e))
+        return None
     
 
 def index():
@@ -49,6 +62,8 @@ def index():
 # get categories
 def list_categories(article):
     html = get(_meijumao + article)
+    if not html:
+        return []
     soup = BeautifulSoup(html, "html.parser")
     listing = []
     for urls in soup.find_all("a", attrs={"data-remote": "true"}):
@@ -67,13 +82,15 @@ def list_sections(section):
     if section == "#":
         return
     html = get(_meijumao + section)
+    if not html:
+        return None
     soup = BeautifulSoup(html, "html.parser")
     listing = []
     sections_map = {}
     for section in soup.find_all("article"):
         listing.append({
                     "label":section.div.a.img.get("alt"),
-                    "thumbnailImage":section.div.a.img.get("src"),
+                    "thumbnail":section.div.a.img.get("src"),
                     "action":"list_series",
                     "series":section.div.a.get("href")
             })
@@ -81,13 +98,21 @@ def list_sections(section):
     # pagination
     will_page = soup.find("ul", attrs={"id": "will_page"}).find_all("li")
     if len(will_page) > 0:
-        if will_page[0].find("a").get("href") != "#":
-            sections_map["next_page"] = True
-            sections_map["next_section"] = will_page[0].find("a").get("href")
-
         if will_page[-1].find("a").get("href") != "#":
+            sections_map["next_page"] = True
+            sections_map["next_section"] = will_page[-1].find("a").get("href")
+        else:
+            sections_map["next_page"] = False
+
+        if will_page[0].find("a").get("href") != "#":
             sections_map["pre_page"] = True
-            sections_map["pre_section"] = will_page[-1].find("a").get("href")
+            sections_map["pre_section"] = will_page[0].find("a").get("href")
+        else:
+            sections_map["pre_page"] = False
+    else:
+         sections_map["next_page"] = False
+         sections_map["pre_page"] = False
+
     return json.dumps(sections_map)
 
 
@@ -166,6 +191,35 @@ def search(keyword):
     p_url = "/search?q="
     url = p_url + keyword.decode('utf-8').encode('gb2312')
     return list_sections(url)
+
+def sumMd5(s):
+    m = hashlib.md5()
+    if isinstance(s,str):
+        s = s.encode("utf-8")
+    m.update(s)
+    return m.hexdigest()
+
+
+def downloadImg(cachedFile,downurl):
+    try:
+        urllib.request.urlretrieve(downurl,cachedFile)
+        return True
+    except urllib.error.HTTPError:
+        pass
+    except urllib.error.ContentTooShortError:
+        pass
+    return False
+
+
+def cacheImg(url):
+    cachedFile = cachePath+sumMd5(url)
+    if os.path.exists(cachedFile):
+        return cachedFile
+    else:
+        if downloadImg(cachedFile,url):
+            return cachedFile
+        else:
+            return url
 
 
 
