@@ -1,0 +1,14 @@
+<services>
+<service name="webhook">
+<param name="repourl">https://github.com/0312birdzhang/harbour-meijumao.git</param>
+<param name="branch">master</param>
+</service>
+<service name="tar_git">
+<param name="url">https://github.com/0312birdzhang/harbour-meijumao.git</param>
+<param name="branch">master</param>
+<param name="revision">adbb05409f74bc90c22cb3f0041116d69947bbbc</param>
+<param name="token"/>
+<param name="debian">N</param>
+<param name="dumb">N</param>
+</service>
+</services>
