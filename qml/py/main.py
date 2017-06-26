@@ -61,18 +61,33 @@ def index():
 
 # get categories
 def list_categories(article):
-    html = get(_meijumao + article)
-    if not html:
-        return []
-    soup = BeautifulSoup(html, "html.parser")
-    listing = []
-    for urls in soup.find_all("a", attrs={"data-remote": "true"}):
-        listing.append({
-           "action" : "list_sections",
-           "section": urls.get("href").replace(_meijumao, ""),
-           "label" : urls.div.get_text()
+    # html = get(_meijumao + article)
+    # if not html:
+    #     return []
+    # soup = BeautifulSoup(html, "html.parser")
+    # listing = []
+    # for urls in soup.find_all("a", attrs={"data-remote": "true"}):
+    #     listing.append({
+    #        "action" : "list_sections",
+    #        "section": urls.get("href").replace(_meijumao, ""),
+    #        "label" : urls.div.get_text()
 
-    })
+    # })
+    listing = [
+        {'section': '/alltvs', 'action': 'list_sections', 'label': u'所有'}, 
+        {'section': '/sections/1', 'action': 'list_sections', 'label': u'喜剧'}, 
+        {'section': '/sections/12', 'action': 'list_sections', 'label': u'爱情'}, 
+        {'section': '/sections/2', 'action': 'list_sections', 'label': u'动作'}, 
+        {'section': '/sections/3', 'action': 'list_sections', 'label': u'科幻'}, 
+        {'section': '/sections/4', 'action': 'list_sections', 'label': u'奇幻'}, 
+        {'section': '/sections/5','action': 'list_sections', 'label': u'恐怖'}, 
+        {'section': '/sections/13', 'action': 'list_sections', 'label': u'惊悚'}, 
+        {'section': '/sections/6', 'action': 'list_sections', 'label': u'剧情'}, 
+        {'section': '/sections/7', 'action': 'list_sections', 'label': u'犯罪'}, 
+        {'section': '/sections/8', 'action': 'list_sections', 'label': u'冒险'}, 
+        {'section': '/sections/9', 'action': 'list_sections', 'label': u'悬疑'}, 
+        {'section': '/sections/11', 'action': 'list_sections', 'label': u'纪录'}
+        ]
     return listing
 
 
