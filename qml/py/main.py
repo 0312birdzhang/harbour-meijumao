@@ -125,16 +125,20 @@ def list_sections(section):
         else:
             sections_map["pre_page"] = False
     else:
-         sections_map["next_page"] = False
-         sections_map["pre_page"] = False
+        sections_map["next_page"] = False
+        sections_map["pre_page"] = False
 
     return json.dumps(sections_map)
 
 
 def list_series(series):
     html = get(_meijumao + series)
-    soup_series = BeautifulSoup(html, "html5lib")
-
+    if not html:
+        return None
+    soup_series = BeautifulSoup(html, "html.parser")
+    series_data = {}
+    fancy = soup_series.find("div", attrs={"class":"fancy-title title-bottom-border"})
+    series_data["fancy"] = fancy.prettify().encode("utf-8")
     listing = []
     for serie in soup_series.find_all(
             "div", attrs={
@@ -149,13 +153,14 @@ def list_series(series):
                 "label":serie.a.get_text().replace(" ", "").replace("\n", ""),
                 "episode":serie.a.get("href")
             })
-    return listing
-  
+    series_data["datas"] = listing
+    return series_data
+
 
 
 def list_playsource(episode):
     html = get(_meijumao + episode)
-    soup_source = BeautifulSoup(html, "html5lib")
+    soup_source = BeautifulSoup(html, "html.parser")
     listing = []
     for source in soup_source.find_all(
             "a", attrs={
@@ -177,7 +182,7 @@ def play_video(episode):
     html = get(_meijumao + episode)
     if not html:
         return None
-    soup_js = BeautifulSoup(html, "html5lib")
+    soup_js = BeautifulSoup(html, "html.parser")
     title = ""
     if soup_js.find_all("h1"):
         title = soup_js.find_all("h1")[0].get_text()
@@ -200,11 +205,11 @@ def play_video(episode):
 
 def search(keyword):
     '''
-    Search 
+    Search
     :param keyword:
     '''
     p_url = "/search?q="
-    url = p_url + keyword.decode('utf-8').encode('gb2312')
+    url = p_url + keyword.decode('utf-8')
     return list_sections(url)
 
 def sumMd5(s):

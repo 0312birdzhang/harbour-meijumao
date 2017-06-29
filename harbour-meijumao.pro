@@ -25,7 +25,6 @@ OTHER_FILES += qml/harbour-meijumao.qml \
     rpm/harbour-meijumao.yaml \
     rpm/harbour-meijumao.changes \
     harbour-meijumao.desktop \
-    qml/pages/BlogDetail.qml \
     qml/pages/Progress.qml \
     qml/py/*.py \
     qml/pages/About.qml
@@ -34,5 +33,6 @@ OTHER_FILES += qml/harbour-meijumao.qml \
 
 DISTFILES += \
     qml/pages/Signalcenter.qml \
-    qml/pages/CacheImage.qml
+    qml/pages/CacheImage.qml \
+    qml/pages/SeriesDetail.qml
 

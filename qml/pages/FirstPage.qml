@@ -42,7 +42,7 @@ Page{
     property bool prevpage:false
     property string next_section
     property string pre_section
-    allowedOrientations: Orientation.Landscape | Orientation.Portrait | Orientation.LandscapeInverted
+    allowedOrientations: Orientation.Landscape //| Orientation.Portrait | Orientation.LandscapeInverted
 
 
     onStatusChanged: {
@@ -202,9 +202,10 @@ Page{
             
 
             onClicked: {
-                pageStack.push(Qt.resolvedUrl("NewsDetail.qml"),{
+                pageStack.push(Qt.resolvedUrl("SeriesDetail.qml"),{
                                    "article":article,
-                                   "href":href
+                                   "series":series,
+                                   "thumbnail":thumbnail
                                });
             }
         }
