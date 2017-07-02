@@ -5,11 +5,11 @@ import io.thp.pyotherside 1.3
 Page{
     id:blogDetail
     property string series
-	property string article
+    property string article
     property string thumbnail
     property string content
-	
-    allowedOrientations: Orientation.Landscape //| Orientation.Portrait | Orientation.LandscapeInverted
+
+    allowedOrientations: Orientation.Landscape | Orientation.Portrait | Orientation.LandscapeInverted
 
 
     ListModel{
@@ -21,72 +21,93 @@ Page{
         Component.onCompleted: {
             addImportPath(Qt.resolvedUrl('../py'));
             detailpy.importModule('main', function () {
-                 detailpy.loadDetail(series)
-             });
+                detailpy.loadDetail(series)
+            });
 
         }
         function loadDetail(series){
-            detailpy.call('main.list_sections',[series],function(result){
+            detailpy.call('main.list_series',[series],function(result){
                 result= eval('(' + result + ')');
                 content = result.fancy;
+//                console.log(content);
+//                console.log(result.datas)
+                for(var i = 0;i<result.datas;i++){
+                    sectionModel.append({
+                                            "label":result.datas[i].label,
+                                            "episode":result.datas[i].episode
+                                        });
+                }
+//                sections.model = sectionModel
             })
         }
     }
 
+    PageHeader {
+        id:header
+        title: article
+    }
+
 
     SilicaFlickable {
-        id:view
-        visible: PageStatus.Active
-        PageHeader {
-            id:header
-            title: article
-            _titleItem.font.pixelSize: Theme.fontSizeSmall
+        id:flick
+        width: parent.width
+        anchors{
+            left:parent.left
+            right: parent.right
+            top:header.bottom
         }
-
-        anchors.fill: parent
         contentHeight: detail.height
-
-        Item{
+        contentWidth: parent.width
+        VerticalScrollDecorator { flickable: flick }
+        Column{
             id:detail
-            y:header.height
-            width:blogDetail.width
-            height: contentbody.height+header.height+sections.height+Theme.paddingLarge
+            spacing: Theme.paddingMedium
+            anchors{
+                left:parent.left
+                right: parent.right
+                leftMargin: Theme.paddingMedium
+                rightMargin: Theme.paddingMedium
+            }
 
+//            CacheImage{
+//                id:thumb
+//                cacheurl :thumbnail
+//                width: Screen.width / 2.5
+//                fillMode: Image.PreserveAspectFit;
+//            }
+            SectionHeader {
+                text: "剧情简介"
+            }
             Label{
                 id:contentbody
                 opacity: 0.8
                 textFormat: Text.RichText
-                text:content
+                text:content.replace("\<h2\>剧情简介:\<\/h2\>","")
                 font.pixelSize: Theme.fontSizeExtraSmall
                 wrapMode: Text.WordWrap
                 linkColor:Theme.primaryColor
                 font.letterSpacing: 2;
-                anchors{
-                    top:detailtime.bottom
-                    left:parent.left
-                    right:parent.right
-                    topMargin: Theme.paddingLarge
-                    leftMargin: Theme.paddingMedium
-                    rightMargin: Theme.paddingMedium
-                    bottomMargin: Theme.paddingLarge
-                }
+                width: Screen.width - Theme.paddingMedium
 
             }
+            SectionHeader {
+                text: "剧集"
+            }
+            Item{
 
-            SilicaListView{
+                GridView{
                 id:sections
-                anchors{
-                    top:contentbody.bottom
-                    margins: Theme.paddingMedium
-                }
-                model: sectionModel
-                clip: true
+                anchors.fill: parent
+                cellWidth:100;
+                cellHeight:60;
+                model:7
+                anchors.top:contentbody.bottom
                 delegate:BackgroundItem{
                     width: parent.width
                     height: catelabelid.height + Theme.paddingMedium * 2
                     Label{
                         id:catelabelid
-                        text:label
+                        text:"test"
                         font.pixelSize: Theme.fontSizeSmall
                         truncationMode: TruncationMode.Fade
                         wrapMode: Text.WordWrap
@@ -99,25 +120,13 @@ Page{
                             margins: Theme.paddingMedium
                         }
                     }
-                    Image {
-                        id: iconLeftImg
-
-                        anchors {
-                            right: parent.right
-                            rightMargin: Theme.paddingSmall
-                            verticalCenter: parent.verticalCenter
-                        }
-                        source: "image://theme/icon-m-right"
-                    }
                     onClicked: {
-                        headtitle = "分类-"+label
-                        py.loadSections(section);
-                        view.scrollToTop()
-                        pageStack.popAttached(undefined);
                     }
                 }
             }
-            
+
+            }
+
         }
     }
 

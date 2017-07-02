@@ -137,8 +137,9 @@ def list_series(series):
         return None
     soup_series = BeautifulSoup(html, "html.parser")
     series_data = {}
-    fancy = soup_series.find("div", attrs={"class":"fancy-title title-bottom-border"})
-    series_data["fancy"] = fancy.prettify().encode("utf-8")
+    fancy = soup_series.find_all("div", attrs={"class":"col_two_third portfolio-single-content col_last nobottommargin"})
+    fancy.
+    series_data["fancy"] =  "".join([i.prettify() for i in fancy])
     listing = []
     for serie in soup_series.find_all(
             "div", attrs={
@@ -154,7 +155,7 @@ def list_series(series):
                 "episode":serie.a.get("href")
             })
     series_data["datas"] = listing
-    return series_data
+    return json.dumps(series_data)
 
 
 

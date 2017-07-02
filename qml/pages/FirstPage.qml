@@ -42,11 +42,11 @@ Page{
     property bool prevpage:false
     property string next_section
     property string pre_section
-    allowedOrientations: Orientation.Landscape //| Orientation.Portrait | Orientation.LandscapeInverted
+    allowedOrientations: Orientation.Portrait | Orientation.LandscapeInverted | Orientation.Landscape
 
 
     onStatusChanged: {
-        if (status == PageStatus.Active) {
+        if (status == PageStatus.Active && !appwindow.loading) {
             if (pageStack._currentContainer.attachedContainer == null) {
                 pageStack.pushAttached(categoriesPage)
             }
@@ -66,7 +66,7 @@ Page{
         }
         for ( var i = 0 ; i< result.datas.length ; i++){
             meijulistModel.append({
-                                      "series":result.datas[i].href,
+                                      "series":result.datas[i].series,
                                       "article":result.datas[i].label,
                                       "thumbnail":result.datas[i].thumbnail
                                   });

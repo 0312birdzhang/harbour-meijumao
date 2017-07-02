@@ -40,7 +40,7 @@ ApplicationWindow
     property string appname: "美剧猫"
     property bool loading: false
 
-    allowedOrientations: Orientation.Landscape //| Orientation.Portrait | Orientation.LandscapeInverted
+    allowedOrientations: Orientation.Portrait | Orientation.LandscapeInverted | Orientation.Landscape
 
 
     Notification{
