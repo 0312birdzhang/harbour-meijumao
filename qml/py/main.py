@@ -136,9 +136,10 @@ def list_series(series):
     if not html:
         return None
     soup_series = BeautifulSoup(html, "html.parser")
+    soup_series.find('div',class_='fancy-title title-bottom-border').decompose()
     series_data = {}
     fancy = soup_series.find_all("div", attrs={"class":"col_two_third portfolio-single-content col_last nobottommargin"})
-    fancy.
+
     series_data["fancy"] =  "".join([i.prettify() for i in fancy])
     listing = []
     for serie in soup_series.find_all(
