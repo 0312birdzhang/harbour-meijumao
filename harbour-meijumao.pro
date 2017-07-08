@@ -25,7 +25,6 @@ OTHER_FILES += qml/harbour-meijumao.qml \
     rpm/harbour-meijumao.yaml \
     rpm/harbour-meijumao.changes \
     harbour-meijumao.desktop \
-    qml/pages/Progress.qml \
     qml/py/*.py \
     qml/pages/About.qml
 # to disable building translations every time, comment out the
@@ -34,5 +33,7 @@ OTHER_FILES += qml/harbour-meijumao.qml \
 DISTFILES += \
     qml/pages/Signalcenter.qml \
     qml/pages/CacheImage.qml \
-    qml/pages/SeriesDetail.qml
+    qml/pages/SeriesDetail.qml \
+    qml/pages/PlayerPage.qml
 
+SAILFISHAPP_ICONS = 86x86 108x108 128x128 256x256

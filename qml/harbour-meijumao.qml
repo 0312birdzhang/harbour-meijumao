@@ -101,11 +101,17 @@ ApplicationWindow
     }
 
     cover: CoverBackground {
-        CoverPlaceholder{
-            icon.width: Theme.coverSizeSmall.width
-            icon.height: icon.width
-            icon.source: "image://theme/harbour-meijumao"
-            text:appname
+//        CoverPlaceholder{
+//            icon.width: Theme.coverSizeSmall.width
+//            icon.height: icon.width
+//            icon.source: "image://theme/harbour-meijumao"
+//            text:appname
+//        }
+        Image{
+            anchors.centerIn: parent
+            source: "image://theme/harbour-meijumao"
+            width: parent.width/2
+            height: width
         }
     }
 

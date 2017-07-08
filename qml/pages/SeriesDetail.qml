@@ -9,7 +9,7 @@ Page{
     property string thumbnail
     property string content
 
-    allowedOrientations: Orientation.Landscape | Orientation.Portrait | Orientation.LandscapeInverted
+    allowedOrientations: Orientation.Portrait //| Orientation.Landscape | Orientation.LandscapeInverted
 
 
     ListModel{
@@ -121,6 +121,15 @@ Page{
                     }
                 }
                 onClicked: {
+                    if(episode.indexOf("http") > -1){
+                        //第三方资源
+                        remorse.execute("正在打开浏览器...", function(){
+                             Qt.openUrlExternally(episode)
+                        })
+                    }else{
+                        //直接播放
+                        pageStack.push(Qt.resolvedUrl("PlayerPage.qml"),{"episode":episode})
+                    }
                 }
             }
             VerticalScrollDecorator {}

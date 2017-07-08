@@ -148,8 +148,8 @@ def list_series(series):
         if not serie.a:
             continue
 
-        if not serie.a.get("href").startswith("/"):
-            continue
+#        if not serie.a.get("href").startswith("/"):
+#            continue
         listing.append({
                 "action":"play_video",
                 "label":serie.a.get_text().replace(" ", "").replace("\n", ""),

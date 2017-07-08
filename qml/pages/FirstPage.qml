@@ -42,7 +42,7 @@ Page{
     property bool prevpage:false
     property string next_section
     property string pre_section
-    allowedOrientations: Orientation.Portrait | Orientation.LandscapeInverted | Orientation.Landscape
+    allowedOrientations: Orientation.Portrait //| Orientation.LandscapeInverted | Orientation.Landscape
 
 
     onStatusChanged: {
