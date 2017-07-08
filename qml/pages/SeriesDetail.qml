@@ -96,34 +96,34 @@ Page{
             Item{
 
                 GridView{
-                id:sections
-                anchors.fill: parent
-                cellWidth:100;
-                cellHeight:60;
-                model:7
-                anchors.top:contentbody.bottom
-                delegate:BackgroundItem{
-                    width: parent.width
-                    height: catelabelid.height + Theme.paddingMedium * 2
-                    Label{
-                        id:catelabelid
-                        text:"test"
-                        font.pixelSize: Theme.fontSizeSmall
-                        truncationMode: TruncationMode.Fade
-                        wrapMode: Text.WordWrap
-                        color: Theme.highlightColor
-                        font.bold:true;
-                        anchors {
-                            top:parent.top;
-                            left: parent.left
-                            right: parent.right
-                            margins: Theme.paddingMedium
+                    id:sections
+                    anchors.fill: parent
+                    cellWidth:100;
+                    cellHeight:60;
+                    model:7
+                    anchors.top:contentbody.bottom
+                    delegate:BackgroundItem{
+                        width: sections.cellWidth;
+                        height: sections.cellHeight
+                        Label{
+                            id:catelabelid
+                            text:"test"
+                            font.pixelSize: Theme.fontSizeSmall
+                            truncationMode: TruncationMode.Fade
+                            wrapMode: Text.WordWrap
+                            color: Theme.highlightColor
+                            font.bold:true;
+                            anchors {
+                                top:parent.top;
+                                left: parent.left
+                                right: parent.right
+                                margins: Theme.paddingMedium
+                            }
+                        }
+                        onClicked: {
                         }
                     }
-                    onClicked: {
-                    }
                 }
-            }
 
             }
 
