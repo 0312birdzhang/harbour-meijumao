@@ -15,7 +15,7 @@ Page {
     property string playsource: ""
 
     orientation: Orientation.Landscape
-    allowedOrientations: Orientation.Landscape
+    allowedOrientations: Orientation.Landscape | Orientation.LandscapeInverted
 
     Component.onCompleted: {
         playpy.playVideo(episode);
