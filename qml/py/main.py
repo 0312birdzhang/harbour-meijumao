@@ -246,6 +246,7 @@ def cacheImg(url):
 
 
 if __name__ == "__main__":
-#     print(list_sections("/maogetvs")) #list_series
+    print(list_sections("/maogetvs")) #list_series
 #     print(list_series("/tvs/110"))
-    print(play_video("/tvs/110/show_episode?episode=214"))
+    # print(play_video("/tvs/110/show_episode?episode=214"))
+    

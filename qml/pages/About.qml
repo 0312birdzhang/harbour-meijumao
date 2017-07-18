@@ -69,7 +69,7 @@ Page {
 
             Label {
                 textFormat: Text.RichText;
-                text: '<style>a:link { color: ' + Theme.highlightColor + '; }</style><a href="http://www.meijumao.net">美剧猫</a>第三方客户端'
+                text: '<style>a:link { color: ' + Theme.highlightColor + '; }</style><a href="http://www.meijumao.net">美剧猫</a>第三方客户端，欢迎大家关注猫哥微信公众号：猫猫美剧'
                 width: parent.width - Theme.paddingLarge * 2
                 anchors.horizontalCenter: parent.horizontalCenter
                 wrapMode: Text.WordWrap
