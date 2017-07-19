@@ -38,6 +38,7 @@ ApplicationWindow
 
     id:appwindow
     property string appname: "美剧猫"
+    property string meijumao : "http://www.meijumao.net"
     property bool loading: false
 
     allowedOrientations: Orientation.Portrait | Orientation.LandscapeInverted | Orientation.Landscape

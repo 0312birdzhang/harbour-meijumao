@@ -101,7 +101,6 @@ Page{
             cellWidth:parent.width/4;
             cellHeight:Theme.itemSizeSmall;
             clip: true
-//            model: 50
             currentIndex: -1
             delegate:BackgroundItem{
                 width: sections.cellWidth;
@@ -130,6 +129,11 @@ Page{
                         //直接播放
                         pageStack.push(Qt.resolvedUrl("PlayerPage.qml"),{"episode":episode})
                     }
+                }
+                onPressAndHold:{
+                    remorse.execute("正在打开浏览器...", function(){
+                             Qt.openUrlExternally(meijumao+episode)
+                    })
                 }
             }
             VerticalScrollDecorator {}
