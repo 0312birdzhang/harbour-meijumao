@@ -128,6 +128,7 @@ Page{
                     }else{
                         //直接播放
                         pageStack.push(Qt.resolvedUrl("PlayerPage.qml"),{"episode":episode})
+                        //弹出选择播放源框
                     }
                 }
                 onPressAndHold:{
@@ -142,5 +143,11 @@ Page{
         VerticalScrollDecorator {flickable: flick}
     }
 
+    Component{
+        id:play_source
+        Rectangle{
+
+        }
+    }
 
 }

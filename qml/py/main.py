@@ -151,10 +151,10 @@ def list_series(series):
 #        if not serie.a.get("href").startswith("/"):
 #            continue
         listing.append({
-                "action":"play_video",
-                "label":serie.a.get_text().replace(" ", "").replace("\n", ""),
-                "episode":serie.a.get("href")
-            })
+            "action":"play_video",
+            "label":serie.a.get_text().replace(" ", "").replace("\n", ""),
+            "episode":serie.a.get("href")
+        })
     series_data["datas"] = listing
     return json.dumps(series_data)
 
@@ -163,15 +163,15 @@ def list_series(series):
 def list_playsource(episode):
     html = get(_meijumao + episode)
     soup_source = BeautifulSoup(html, "html.parser")
+    playsources = {}
     listing = []
     for source in soup_source.find_all(
             "a", attrs={
             "class": "button button-small button-rounded"}):
-#         if source.get("href").startswith("http"):
-#             continue
         listing.append({"href":source.get("href"),
                         "source":source.get_text()})
-    return listing
+    playsources["datas"] = listing
+    return json.dumps(playsources)
 
 
 def play_video(episode):
