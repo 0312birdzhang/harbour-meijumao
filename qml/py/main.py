@@ -195,15 +195,22 @@ def play_video(episode):
     for script in soup_js.find_all('script'):
         matched = re.search('http.*m3u8.*\"', script.get_text())
         if matched:
-            return matched.group().replace(
+            return json.dumps({
+                "type":"m3u",
+                "url":matched.group().replace(
                 "\"",
                 "").replace(
                 "&amp;",
                 "&").replace(
                 "->application/x-mpegURL",
                 "")
+                })
     if len(play_url) == 0:
-        return None
+        for iframe in soup_js.find_all("iframe"):
+            return json.dumps({
+                "type":"origin",
+                "url":_meijumao + episode
+            })
 
 def search(keyword):
     '''
