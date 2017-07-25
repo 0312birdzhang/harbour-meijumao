@@ -51,40 +51,38 @@ Page {
 
     Component {
         id:m3u
-        Column {
-            anchors.bottom: parent.bottom
-            anchors.left: parent.left
-            anchors.margins:  Theme.paddingLarge
-
-            Text {
-                text: Math.ceil(video.bufferProgress * 100)
-                color: Theme.highlightColor
-                font.pixelSize: Theme.fontSizeSmall
-            }
-
-            Text {
-                text: video.status === MediaPlayer.Loading ? "影片加载中..." : ( video.status === MediaPlayer.Loaded ? "影片加载中...[完成]": "影片加载中...[完成]" )
-                color: Theme.secondaryColor
-                font.pixelSize: Theme.fontSizeSmall
-            }
-
-            Text {
-                text: video.status === MediaPlayer.Buffering || video.status === MediaPlayer.Stalled ? "影片缓存中...": ( video.status === MediaPlayer.Buffered ? "影片缓存中...[完成]" : ( video.status === MediaPlayer.Stalled ? "影片缓存中...[错误]" : "" ) )
-                color: Theme.secondaryColor
-                font.pixelSize: Theme.fontSizeSmall
-            }
-
-            Text {
-                text: video.status === MediaPlayer.InvalidMedia ? "不支持的格式": ( video.status === MediaPlayer.UnknownStatus ? "未知的错误" : "" )
-                color: Theme.secondaryColor
-                font.pixelSize: Theme.fontSizeSmall
-            }
-        }
-
         SilicaFlickable {
             anchors.fill: parent
             flickableDirection: Flickable.VerticalFlick
+            Column {
+                anchors.bottom: parent.bottom
+                anchors.left: parent.left
+                anchors.margins:  Theme.paddingLarge
 
+                Text {
+                    text: Math.ceil(video.bufferProgress * 100)
+                    color: Theme.highlightColor
+                    font.pixelSize: Theme.fontSizeSmall
+                }
+
+                Text {
+                    text: video.status === MediaPlayer.Loading ? "影片加载中..." : ( video.status === MediaPlayer.Loaded ? "影片加载中...[完成]": "影片加载中...[完成]" )
+                    color: Theme.secondaryColor
+                    font.pixelSize: Theme.fontSizeSmall
+                }
+
+                Text {
+                    text: video.status === MediaPlayer.Buffering || video.status === MediaPlayer.Stalled ? "影片缓存中...": ( video.status === MediaPlayer.Buffered ? "影片缓存中...[完成]" : ( video.status === MediaPlayer.Stalled ? "影片缓存中...[错误]" : "" ) )
+                    color: Theme.secondaryColor
+                    font.pixelSize: Theme.fontSizeSmall
+                }
+
+                Text {
+                    text: video.status === MediaPlayer.InvalidMedia ? "不支持的格式": ( video.status === MediaPlayer.UnknownStatus ? "未知的错误" : "" )
+                    color: Theme.secondaryColor
+                    font.pixelSize: Theme.fontSizeSmall
+                }
+            }
             Video {
                 id: video
                 width: parent.width
@@ -130,7 +128,7 @@ Page {
     }
     Component {
         id:origin
-        SiliaWebView{
+        SilicaWebView{
             url:playsource
             anchors.fill:parent
         }
