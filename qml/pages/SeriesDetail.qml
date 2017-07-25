@@ -3,7 +3,7 @@ import Sailfish.Silica 1.0
 import io.thp.pyotherside 1.3
 
 Page{
-    id:blogDetail
+    id:page
     property string series
     property string article
     property string thumbnail
@@ -32,6 +32,7 @@ Page{
             }
             function loadDetail(series){
                 detailpy.call('main.list_series',[series],function(result){
+                    console.log(result)
                     result= eval('(' + result + ')');
                     content = result.fancy;
                     for(var i = 0;i<result.datas.length;i++){
@@ -49,6 +50,11 @@ Page{
         anchors.fill: parent
         contentHeight: detail.height + sections.height
         contentWidth: parent.width
+        MouseArea {
+            enabled: drawer.open
+            anchors.fill: detail
+            onClicked: drawer.open = false
+        }
         Column{
             id:detail
             spacing: Theme.paddingMedium
@@ -126,8 +132,10 @@ Page{
                              Qt.openUrlExternally(episode)
                         })
                     }else{
-                        //直接播放
-                        pageStack.push(Qt.resolvedUrl("PlayerPage.qml"),{"episode":episode})
+                        //弹窗选择播放源
+                        //pageStack.push(Qt.resolvedUrl("PlayerPage.qml"),{"episode":episode})
+                        drawer.episode = episode;
+                        drawer.open = true;
                     }
                 }
                 onPressAndHold:{
@@ -142,5 +150,64 @@ Page{
         VerticalScrollDecorator {flickable: flick}
     }
 
+    Drawer {
+        id: drawer
+        property string episode
+        anchors.fill: parent
+
+        onEpisodeChanged: drawerPy.loadPlaysources(episode)
+        ListModel{
+            id:playSourceModel
+        }
+
+        dock: page.isPortrait ? Dock.Right : Dock.Left
+        Python{
+            id:drawerPy
+            Component.onCompleted: {
+                addImportPath(Qt.resolvedUrl('../py'));
+                detailpy.importModule('main', function () {
+
+
+                });
+            }
+            function loadPlaysources(episode){
+                drawerPy.call('main.list_playsource',[episode],function(result){
+                    result = eval('(' + result + ')');
+                    for(var i = 0;i<result.datas.length;i++){
+                        playSourceModel.append({
+                                                "label":result.datas[i].label,
+                                                "episode":result.datas[i].episode
+                                            });
+                    }
+                    playSourceView.model = playSourceModel;
+                })
+            }
+        }
+
+        background: SilicaListView {
+            id:playSourceView
+            anchors.fill: parent
+            header: PageHeader { title: "选择播放源" }
+
+
+            VerticalScrollDecorator {}
+
+            delegate: ListItem {
+                id: listItem
+
+                Label {
+                    x: Theme.horizontalPageMargin
+                    text: source
+                    anchors.verticalCenter: parent.verticalCenter
+                    color: listItem.highlighted ? Theme.highlightColor : Theme.primaryColor
+
+                }
+                onClicked: {
+                    pageStack.push(Qt.resolvedUrl("PlayerPage.qml"),{"episode":href})
+                }
+            }
+        }
+
+    }
 
 }

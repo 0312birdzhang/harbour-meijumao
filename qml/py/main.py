@@ -52,6 +52,7 @@ def get(url):
         return allhtml
     except Exception as e:
         logging.debug(str(e))
+        logging.debug(url)
         pyotherside.send('loadFailed',str(e))
         return None
 
@@ -175,7 +176,7 @@ def list_playsource(episode):
     for source in soup_source.find_all(
             "a", attrs={
             "class": "button button-small button-rounded"}):
-        listing.append({"href":source.get("href"),
+        listing.append({"href":source.get("href").replace(_meijumao,""),
                         "source":source.get_text()})
     playsources["datas"] = listing
     return json.dumps(playsources)
@@ -215,9 +216,15 @@ def play_video(episode):
     if len(play_url) == 0:
         for iframe in soup_js.find_all("iframe"):
             return json.dumps({
-                "type":"origin",
-                "url":_meijumao + episode
-            })
+                    "type":"m3u",
+                    "url":getBDyun(iframe.src)
+                })
+
+    else:
+        return json.dumps({
+            "type":"origin",
+            "url":_meijumao + episode
+        })
 
 def getBDyun(bdurl):
     html = get(bdurl)
