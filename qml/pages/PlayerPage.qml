@@ -34,6 +34,8 @@ Page {
                 result= eval('(' + result + ')');
                 playsource = result.url;
                 playtype = result.type;
+                console.log(playsource)
+                console.log(playtype)
                 if(playtype == "origin"){
                     loader.sourceComponent = origin
                 }else{

@@ -54,7 +54,14 @@ def get(url):
         logging.debug(str(e))
         pyotherside.send('loadFailed',str(e))
         return None
-    
+
+def post(url, data):
+    headers = {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36 Edge/15.15063',
+        'Content-Type':'application/x-www-form-urlencoded; charset=UTF-8'
+    }
+    r = requests.post(url, data=data, headers=headers)
+    return r.content    
 
 def index():
     return __index__
@@ -211,6 +218,22 @@ def play_video(episode):
                 "type":"origin",
                 "url":_meijumao + episode
             })
+
+def getBDyun(bdurl):
+    html = get(bdurl)
+    soup = BeautifulSoup(html, "html.parser")
+    script = soup.find_all("script")[-1].string
+    url=""
+    for i in script.split("\n"):
+        if "url" in i:
+            url = i.split(":")[1].strip(" ").replace("'","").replace(",","")
+            break
+    data = "url="+url+"&up=0"
+    bdjson = json.loads(post("https://meijumao.cn/yunparse/api.php", data))
+    if bdjson.msg == "ok":
+        return bdjson.url
+    else:
+        return None
 
 def search(keyword):
     '''
