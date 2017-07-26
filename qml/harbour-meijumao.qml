@@ -68,7 +68,7 @@ ApplicationWindow
     Timer{
         id:processingtimer;
         interval: 60000;
-        onTriggered: signalCenter.loadFailed(qsTr("Timeout"));
+        onTriggered: signalCenter.loadFailed(qsTr("请求超时"));
     }
 
 

@@ -50,11 +50,7 @@ Page{
         anchors.fill: parent
         contentHeight: detail.height + sections.height
         contentWidth: parent.width
-        MouseArea {
-            enabled: drawer.open
-            anchors.fill: detail
-            onClicked: drawer.open = false
-        }
+
         Column{
             id:detail
             spacing: Theme.paddingMedium
@@ -133,7 +129,7 @@ Page{
                         })
                     }else{
                         //选择播放源
-                        pageStack.push(sourcesPage,{"episode":episode})
+                        pageStack.push(Qt.resolvedUrl("PlaySourcePage.qml"),{"episode":episode})
                         
                     }
                 }
@@ -149,63 +145,6 @@ Page{
         VerticalScrollDecorator {flickable: flick}
     }
 
-    Page {
-        id: sourcesPage
-        property string episode
-        anchors.fill: parent
 
-        ListModel{
-            id:playSourceModel
-        }
-
-        Python{
-            id:drawerPy
-            Component.onCompleted: {
-                addImportPath(Qt.resolvedUrl('../py'));
-                detailpy.importModule('main', function () {
-                    drawerPy.loadPlaysources(episode);
-                });
-            }
-            function loadPlaysources(episode){
-                drawerPy.call('main.list_playsource',[episode],function(result){
-                    result = eval('(' + result + ')');
-                    for(var i = 0;i<result.datas.length;i++){
-                        playSourceModel.append({
-                                                "label":result.datas[i].label,
-                                                "episode":result.datas[i].episode
-                                            });
-                    }
-                    playSourceView.model = playSourceModel;
-                })
-            }
-        }
-
-        SilicaListView {
-            id:playSourceView
-            anchors.fill: parent
-            header: PageHeader { 
-                title: "选择播放源" 
-            }
-
-
-            VerticalScrollDecorator {}
-
-            delegate: ListItem {
-                id: listItem
-
-                Label {
-                    x: Theme.horizontalPageMargin
-                    text: source
-                    anchors.verticalCenter: parent.verticalCenter
-                    color: listItem.highlighted ? Theme.highlightColor : Theme.primaryColor
-
-                }
-                onClicked: {
-                    pageStack.push(Qt.resolvedUrl("PlayerPage.qml"),{"episode":href})
-                }
-            }
-        }
-
-    }
 
 }

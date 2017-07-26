@@ -34,6 +34,7 @@ DISTFILES += \
     qml/pages/Signalcenter.qml \
     qml/pages/CacheImage.qml \
     qml/pages/SeriesDetail.qml \
-    qml/pages/PlayerPage.qml
+    qml/pages/PlayerPage.qml \
+    qml/pages/PlaySourcePage.qml
 
 SAILFISHAPP_ICONS = 86x86 108x108 128x128 256x256

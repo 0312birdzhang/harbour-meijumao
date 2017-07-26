@@ -220,9 +220,13 @@ def play_video(episode):
                 })
     if len(play_url) == 0:
         for iframe in soup_js.find_all("iframe"):
+            iframe_src = iframe.attrs['src']
+            iframe_parse = urllib.parse.urlparse(iframe_src)
+            params = urllib.parse.parse_qs(iframe_parse.query,True)
+            bdurl = iframe_parse.scheme+"://"+iframe_parse.netloc+iframe_parse.path+"?url="+urllib.parse.quote(params.get("url")[0].replace("~bdyun",""))+"~bdyun"
             return json.dumps({
                     "type":"m3u",
-                    "url":getBDyun(iframe.src)
+                    "url":getBDyun(bdurl)
                 })
 
     else:
