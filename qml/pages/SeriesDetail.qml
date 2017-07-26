@@ -132,10 +132,9 @@ Page{
                              Qt.openUrlExternally(episode)
                         })
                     }else{
-                        //弹窗选择播放源
-                        //pageStack.push(Qt.resolvedUrl("PlayerPage.qml"),{"episode":episode})
-                        drawer.episode = episode;
-                        drawer.open = true;
+                        //选择播放源
+                        pageStack.push(sourcesPage,{"episode":episode})
+                        
                     }
                 }
                 onPressAndHold:{
@@ -150,24 +149,21 @@ Page{
         VerticalScrollDecorator {flickable: flick}
     }
 
-    Drawer {
-        id: drawer
+    Page {
+        id: sourcesPage
         property string episode
         anchors.fill: parent
 
-        onEpisodeChanged: drawerPy.loadPlaysources(episode)
         ListModel{
             id:playSourceModel
         }
 
-        dock: page.isPortrait ? Dock.Right : Dock.Left
         Python{
             id:drawerPy
             Component.onCompleted: {
                 addImportPath(Qt.resolvedUrl('../py'));
                 detailpy.importModule('main', function () {
-
-
+                    drawerPy.loadPlaysources(episode);
                 });
             }
             function loadPlaysources(episode){
@@ -184,10 +180,12 @@ Page{
             }
         }
 
-        background: SilicaListView {
+        SilicaListView {
             id:playSourceView
             anchors.fill: parent
-            header: PageHeader { title: "选择播放源" }
+            header: PageHeader { 
+                title: "选择播放源" 
+            }
 
 
             VerticalScrollDecorator {}

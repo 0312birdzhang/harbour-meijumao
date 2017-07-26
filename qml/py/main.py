@@ -188,6 +188,11 @@ def play_video(episode):
     :param path: str
     :return: None
     """
+    if episode.startswith("http"):
+        return json.dumps({
+            "type":"origin",
+            "url":episode
+        })
     episode = episode.replace("show_episode?", "play_episode?")
     html = get(_meijumao + episode)
     if not html:
