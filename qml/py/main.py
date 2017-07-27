@@ -56,13 +56,20 @@ def get(url):
         pyotherside.send('loadFailed',str(e))
         return None
 
+# def post(url, data):
+#     headers = {
+#         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36 Edge/15.15063',
+#         'Content-Type':'application/x-www-form-urlencoded; charset=UTF-8'
+#     }
+#     r = requests.post(url, data=data, headers=headers)
+#     return r.content    
+
 def post(url, data):
-    headers = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36 Edge/15.15063',
-        'Content-Type':'application/x-www-form-urlencoded; charset=UTF-8'
-    }
-    r = requests.post(url, data=data, headers=headers)
-    return r.content    
+    data = data.encode('utf-8')
+    request = urllib.request.Request(url)
+    request.add_header('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8')
+    f = urllib.request.urlopen(request, data)
+    return f.read().decode('utf-8')
 
 def index():
     return __index__
