@@ -253,8 +253,8 @@ def getBDyun(bdurl):
             break
     data = "url="+url+"&up=0"
     bdjson = json.loads(post("https://meijumao.cn/yunparse/api.php", data))
-    if bdjson.msg == "ok":
-        return bdjson.url
+    if bdjson.get("msg") == "ok":
+        return bdjson.get("url")
     else:
         return None
 
