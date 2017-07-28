@@ -14,6 +14,7 @@ import pyotherside
 from basedir import *
 from bs4 import BeautifulSoup
 import logging
+import string
 
 import hashlib
 import os,sys
@@ -56,18 +57,11 @@ def get(url):
         pyotherside.send('loadFailed',str(e))
         return None
 
-# def post(url, data):
-#     headers = {
-#         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36 Edge/15.15063',
-#         'Content-Type':'application/x-www-form-urlencoded; charset=UTF-8'
-#     }
-#     r = requests.post(url, data=data, headers=headers)
-#     return r.content    
-
 def post(url, data):
     data = data.encode('utf-8')
     request = urllib.request.Request(url)
     request.add_header('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8')
+    request.add_header('User-Agent', 'curl/7.19.7 (x86_64-redhat-linux-gnu) libcurl/7.19.7 NSS/3.19.1 Basic ECC zlib/1.2.3 libidn/1.18 libssh2/1.4.2')
     f = urllib.request.urlopen(request, data)
     return f.read().decode('utf-8')
 
@@ -200,7 +194,7 @@ def play_video(episode):
             "type":"origin",
             "url":episode
         })
-    episode = episode.replace("show_episode?", "play_episode?")
+    #episode = episode.replace("show_episode?", "play_episode?")
     html = get(_meijumao + episode)
     if not html:
         return None
@@ -228,9 +222,7 @@ def play_video(episode):
     if len(play_url) == 0:
         for iframe in soup_js.find_all("iframe"):
             iframe_src = iframe.attrs['src']
-            iframe_parse = urllib.parse.urlparse(iframe_src)
-            params = urllib.parse.parse_qs(iframe_parse.query,True)
-            bdurl = iframe_parse.scheme+"://"+iframe_parse.netloc+iframe_parse.path+"?url="+urllib.parse.quote(params.get("url")[0].replace("~bdyun",""))+"~bdyun"
+            bdurl = urllib.parse.quote(iframe_src,safe=string.printable)
             return json.dumps({
                     "type":"m3u",
                     "url":getBDyun(bdurl)
@@ -249,7 +241,7 @@ def getBDyun(bdurl):
     url=""
     for i in script.split("\n"):
         if "url" in i:
-            url = i.split(":")[1].strip(" ").replace("'","").replace(",","")
+            url = i.split(":")[1].strip(" ").replace("'","").replace(",","").replace("\r","")
             break
     data = "url="+url+"&up=0"
     bdjson = json.loads(post("https://meijumao.cn/yunparse/api.php", data))

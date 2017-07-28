@@ -31,6 +31,7 @@ Page {
         }
         function playVideo(episode){
             playpy.call('main.play_video',[episode],function(result){
+                console.log(result)
                 result= eval('(' + result + ')');
                 playsource = result.url;
                 playtype = result.type;
