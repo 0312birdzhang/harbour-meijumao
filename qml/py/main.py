@@ -61,7 +61,7 @@ def post(url, data):
     data = data.encode('utf-8')
     request = urllib.request.Request(url)
     request.add_header('Content-Type', 'application/x-www-form-urlencoded; charset=UTF-8')
-    request.add_header('User-Agent', 'curl/7.19.7 (x86_64-redhat-linux-gnu) libcurl/7.19.7 NSS/3.19.1 Basic ECC zlib/1.2.3 libidn/1.18 libssh2/1.4.2')
+    request.add_header('User-Agent', 'Mozilla/5.0 (iPhone; CPU iPhone OS 10_0 like Mac OS X) AppleWebKit/602.1.38 (KHTML, like Gecko) Version/10.0 Mobile/14A5297c Safari/602.1')
     f = urllib.request.urlopen(request, data)
     return f.read().decode('utf-8')
 

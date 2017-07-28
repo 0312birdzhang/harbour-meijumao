@@ -8,19 +8,6 @@
 # * date Author's Name <author's email> version-release
 # - Summary of changes
 
-* Fri Oct 2 2015 BirdZhang <0312birdzhang.com> 0.7.2
+* Fri Jul 28 2017 BirdZhang <0312birdzhang.com> 1.0.0
 -修复bug
--wifi下默认显示图片
 
-* Fri Oct 2 2015 BirdZhang <0312birdzhang.com> 0.7.1
--使用新的通知栏
-
-* Fri Jun 19 2015 BirdZhang <0312birdzhang.com> 0.6.3
--解决harbour商店校验问题，感谢coderus
-
-* Fri Jun 19 2015 BirdZhang <0312birdzhang.com> 0.6.2
--更换API
--由蝉曦调整界面
--由蝉曦修改详细页面图片加载方式
--添加评论查看，评论的支持跟反对无效
--修复加载最新功能，提示新增条数
