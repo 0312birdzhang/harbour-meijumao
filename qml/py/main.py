@@ -40,7 +40,7 @@ if not os.path.exists(cachePath):
 
 def get(url):
     headers = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/52.0.2743.116 Safari/537.36 Edge/15.15063',
+        'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 9_1 like Mac OS X) AppleWebKit/601.1.46 (KHTML, like Gecko) Version/9.0 Mobile/13B143 Safari/601.1',
         'Host': 'www.meijumao.net'
         }
     pyotherside.send('loadStarted')
@@ -245,9 +245,11 @@ def getBDyun(bdurl):
             break
     data = "url="+url+"&up=0"
     bdjson = json.loads(post("https://meijumao.cn/yunparse/api.php", data))
+    logging.debug(str(bdjson))
     if bdjson.get("msg") == "ok":
         return bdjson.get("url")
     else:
+        pyotherside.send('loadFailed',str(bdjson.get("msg")))
         return None
 
 def search(keyword):
